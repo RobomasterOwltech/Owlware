@@ -1,13 +1,13 @@
 /*
- * BaseMotor.hpp
+ * IntfMotor.hpp
  *
  *  Created on: Apr 10, 2024
  *      Author: @JorgePerC
  * This is based on the following:
  * https://github.com/STMicroelectronics/STM32CubeF4/blob/master/Projects/STM324xG_EVAL/Examples/CAN/CAN_Networking/Src/main.c
  */
-#ifndef BaseMotor_HPP
-#define BaseMotor_HPP
+#ifndef IntfMotor_HPP
+#define IntfMotor_HPP
 
 #include "ControllerCAN.hpp"
 #include "ControllerPWM.hpp"
@@ -32,7 +32,7 @@ typedef union {
 
 //TODO: Create a new union for selecting the ID
 // bc it can be a channel, or for can
-class BaseMotor {
+class IntfMotor {
    protected:
     Controller contr;
     OperationalRanges* attr;
@@ -46,9 +46,9 @@ class BaseMotor {
     virtual void actuateTorque();
 
    public:
-    BaseMotor();
-    BaseMotor(ControllerCAN* controller, OperationalRanges* attr, OperationModes mode, uint8_t direction);
-    BaseMotor(ControllerPWM* controller, OperationalRanges* attr, OperationModes mode, uint8_t direction);
+    IntfMotor();
+    IntfMotor(ControllerCAN* controller, OperationalRanges* attr, OperationModes mode, uint8_t direction);
+    IntfMotor(ControllerPWM* controller, OperationalRanges* attr, OperationModes mode, uint8_t direction);
     virtual float getFeedback();
     void actuate();
     // The input value is an angular velocity
@@ -57,7 +57,7 @@ class BaseMotor {
     void invert();
     void stop();
 
-    ~BaseMotor();
+    ~IntfMotor();
 };
 
-#endif /* BaseMotor */
+#endif /* IntfMotor */

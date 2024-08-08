@@ -10,9 +10,9 @@
 #ifndef Motor2305_HPP
 #define Motor2305_HPP
 
-#include "BaseMotor.hpp"
+#include "IntfMotor.hpp"
 
-class Motor_2305 : BaseMotor {
+class Motor_2305 : IntfMotor {
    private:
     // ===== Operational ranges =====
     /*

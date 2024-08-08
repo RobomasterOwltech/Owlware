@@ -1,15 +1,15 @@
 /*
- * BaseMotor.cpp
+ * IntfMotor.cpp
  *
  *  Created on: Apr 12, 2024
  *      Author: @JorgePerC
  */
-#include "BaseMotor.hpp"
+#include "IntfMotor.hpp"
 
-BaseMotor::BaseMotor() {
+IntfMotor::IntfMotor() {
     // Empty
 }
-BaseMotor::BaseMotor(ControllerCAN* controller, OperationalRanges* attr, OperationModes mode, uint8_t direction) {
+IntfMotor::IntfMotor(ControllerCAN* controller, OperationalRanges* attr, OperationModes mode, uint8_t direction) {
     // TODO: Check pointers
     // TODO: validate parameters before successful obj creation
     this->contr.can = controller;
@@ -18,14 +18,14 @@ BaseMotor::BaseMotor(ControllerCAN* controller, OperationalRanges* attr, Operati
     this->mode = mode;
 }
 
-BaseMotor::BaseMotor(ControllerPWM* controller, OperationalRanges* attr, OperationModes mode, uint8_t direction) {
+IntfMotor::IntfMotor(ControllerPWM* controller, OperationalRanges* attr, OperationModes mode, uint8_t direction) {
     this->contr.pwm = controller;
     this->attr = attr;
     this->dir = direction;
     this->mode = mode;
 }
 
-void BaseMotor::actuate() {
+void IntfMotor::actuate() {
     switch (mode) {
         case POS:
             actuatePosition();
@@ -42,6 +42,6 @@ void BaseMotor::actuate() {
     }
 }
 
-void BaseMotor::invert() { this->dir *= -1; }
+void IntfMotor::invert() { this->dir *= -1; }
 
-void BaseMotor::stop() { this->setReference(0); }
+void IntfMotor::stop() { this->setReference(0); }

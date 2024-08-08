@@ -10,7 +10,7 @@ ls/*
 #ifndef MotorGM6020_HPP
 #define MotorGM6020_HPP
 
-#include "BaseMotor.hpp"
+#include "IntfMotor.hpp"
 
     // ===== Operational ranges =====
     /*
@@ -21,7 +21,7 @@ ls/*
      */
 
 
-class Motor_GM6020 : BaseMotor {
+class Motor_GM6020 : IntfMotor {
    private:
     // Resolution for position control:
     static const uint8_t maxAngle = 8191;

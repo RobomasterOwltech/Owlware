@@ -1,6 +1,6 @@
 #include "SCM3508.hpp"
 
-SpeedControllerPWM::SpeedControllerPWM(TIM_HandleTypeDef timer, OperationModes mode, uint8_t motorId) {
+SCM3508::SCM3508(TIM_HandleTypeDef timer, OperationModes mode, uint8_t motorId) {
     // Setting the properties
     this->attr->maxVelocity = 400;   // rpm
     this->attr->minVelocity = -400;  // rpm
@@ -17,9 +17,9 @@ SpeedControllerPWM::SpeedControllerPWM(TIM_HandleTypeDef timer, OperationModes m
     this->contr.pwm = new ControllerPWM(timer, mode);
 }
 
-void SpeedControllerPWM::setSpeed(float _Speed) { Speed = _Speed; }
+void SCM3508::setSpeed(float _Speed) { Speed = _Speed; }
 
-float SpeedControllerPWM::actuateVelocity(uint16_t duty_Cycle, float maxVel) { return (duty_Cycle * maxVel); }
+float SCM3508::actuateVelocity(uint16_t duty_Cycle, float maxVel) { return (duty_Cycle * maxVel); }
 
-void SpeedControllerPWM::setReference(float _reference) {}
-void SpeedControllerPWM::setControlType(OperationModes _mode) { mode = _mode; }
+void SCM3508::setReference(float _reference) {}
+void SCM3508::setControlType(OperationModes _mode) { mode = _mode; }

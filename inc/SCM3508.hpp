@@ -4,12 +4,11 @@
 #define SCM3508_H
 using namespace std;
 
-#include "BaseMotor.hpp"
+#include "IntfMotor.hpp"
 
-class SpeedControllerPWM : BaseMotor {
+class SCM3508 : IntfMotor {
    public:
-    SpeedControllerPWM(TIM_HandleTypeDef timer, OperationModes mode, uint8_t motorId);
-    //~SpeedControllerPWM();
+    SCM3508(TIM_HandleTypeDef timer, OperationModes mode, uint8_t motorId);
 
     void setSpeed(float);
     virtual float actuateVelocity(uint16_t, float);

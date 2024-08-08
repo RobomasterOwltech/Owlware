@@ -4,9 +4,9 @@
 #define SSCMC610 _H
 using namespace std;
 
-#include "BaseMotor.hpp"
+#include "IntfMotor.hpp"
 
-class SCMC610 : BaseMotor {
+class SCMC610 : IntfMotor {
    public:
     SCMC610(CAN_HandleTypeDef hcan, OperationModes mode, uint8_t motorId);
 

@@ -20,9 +20,9 @@ typedef enum { POS, VEL, TOR } OperationModes;
 // } Controller;
 
 class IntfMotor {
-    private: 
-        // float maxTemp;
-        // float minTemp;
+    protected:
+        Controller contr;
+
         int16_t maxVel;
         int16_t minVel;
         int16_t maxTorque;
@@ -36,16 +36,14 @@ class IntfMotor {
         int16_t minCurrent;
         uint8_t ID; 
 
-    protected:
-        Controller contr;
-
+        int16_t ref;
         uint8_t mode;
         uint8_t dir;
         uint16_t runFreq;
 
-        virtual void actuateVelocity();
-        virtual void actuatePosition();
-        virtual void actuateTorque();
+        virtual void actuateVelocity(int16_t ref);
+        virtual void actuatePosition(int16_t ref);
+        virtual void actuateTorque(int16_t ref);
 
         void setVelocity();
         void setTorque();
@@ -57,12 +55,11 @@ class IntfMotor {
         IntfMotor(ControllerCAN* controller,  OperationModes mode, uint8_t direction);
         IntfMotor(ControllerPWM* controller, OperationModes mode, uint8_t direction);
         virtual float getFeedback();
-        void actuate();
+        void actuate(int16_t ref);
         // The input value is an angular velocity
-        virtual void setReference(float w){};
         virtual void setControlType(OperationModes mode){};
-        void invert();
-        void stop();
+        void invert(uint8_t direction);
+        void stop(int16_t ref);
 
         ~IntfMotor();
 };

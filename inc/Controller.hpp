@@ -13,6 +13,7 @@ typedef enum { PWM, CAN } ControllerType;
 
 class Controller {
     private:
+        // Defines the controller type for debugging purposes
         ControllerType type;
 
     public:
@@ -20,7 +21,9 @@ class Controller {
         ~Controller();
 
         void setType(ControllerType);
+        ControllerType getType();
 
+        // Abstract functions
         virtual void sendSignal(uint32_t);
         virtual uint32_t readSignal();
         virtual void stopActuator(uint32_t);

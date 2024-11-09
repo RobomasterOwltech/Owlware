@@ -21,7 +21,7 @@ typedef enum { POS, VEL, TOR } OperationModes;
 
 class IntfMotor {
     protected:
-        Controller contr;
+        Controller* contr; //polymorphism 
 
         int16_t maxVel;
         int16_t minVel;
@@ -54,12 +54,12 @@ class IntfMotor {
         IntfMotor();
         IntfMotor(ControllerCAN* controller,  OperationModes mode, uint8_t direction);
         IntfMotor(ControllerPWM* controller, OperationModes mode, uint8_t direction);
-        virtual float getFeedback();
+        virtual float getFeedback()=0;
         void actuate(int16_t ref);
         // The input value is an angular velocity
         virtual void setControlType(OperationModes mode){};
         void invert(uint8_t direction);
-        void stop(int16_t ref);
+        void stop(/*int16_t ref*/);
 
         ~IntfMotor();
 };

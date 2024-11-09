@@ -52,14 +52,15 @@ class IntfMotor {
 
     public:
         IntfMotor();
-        IntfMotor(ControllerCAN* controller,  OperationModes mode, uint8_t direction);
-        IntfMotor(ControllerPWM* controller, OperationModes mode, uint8_t direction);
+        //IntfMotor(ControllerCAN* controller,  OperationModes mode, uint8_t direction);
+        //IntfMotor(ControllerPWM* controller, OperationModes mode, uint8_t direction);
+        IntfMotor(Controller* controller, OperationModes mode, uint8_t direction);
         virtual float getFeedback()=0;
         void actuate(int16_t ref);
         // The input value is an angular velocity
         virtual void setControlType(OperationModes mode){};
         void invert(uint8_t direction);
-        void stop(/*int16_t ref*/);
+        void stop(int16_t ref);
 
         ~IntfMotor();
 };

@@ -10,13 +10,12 @@
 
 #include "TemplateClass.hpp"
 
-TemplateClass::TemplateClass(){
+TemplateClass::TemplateClass() {
     // Do something
 }
 
-TemplateClass::~TemplateClass(){
+TemplateClass::~TemplateClass() {
     // DO something
 }
-
 
 #endif /* TemplateClass */

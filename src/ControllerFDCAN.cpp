@@ -69,7 +69,7 @@ void ControllerCAN::sendMessage(CAN_TxHeaderTypeDef* TxHeader, uint8_t* TxData) 
         }
     }
     // Timeout so that is has time to send the data
-    HAL_Delay(10);
+    // HAL_Delay(10);
 }
 
 /* This method is configured to read messages through polling.
@@ -90,7 +90,7 @@ void ControllerCAN::readMessagePolling() {
     }
     // Timeout so that is has time to read the data
 
-    HAL_Delay(10);
+    // HAL_Delay(10);
 }
 
 // TODO: Complete

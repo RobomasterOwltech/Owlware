@@ -2,131 +2,132 @@
 #define BNO055_H
 
 #include <stdint.h>
+
 #include <cstdio>
+
 #include "i2c.h"
 #include "main.h"
 
 #define BNO055_FUNC_RETURN uint8_t
-#define ERROR_DEFAULT           (uint8_t)(0)
+#define ERROR_DEFAULT      (uint8_t)(0)
 
-#define START_BYTE				0xAA
-#define RESPONSE_BYTE			0xBB
-#define ERROR_BYTE		  		0xEE
+#define START_BYTE    0xAA
+#define RESPONSE_BYTE 0xBB
+#define ERROR_BYTE    0xEE
 
-#define BNO055_I2C_ADDR_HI		0x29
-#define BNO055_I2C_ADDR_LO		0x28
+#define BNO055_I2C_ADDR_HI 0x29
+#define BNO055_I2C_ADDR_LO 0x28
 
-#define ERROR_WRITE_SUCCESS		0x01		// Everything worker as expected
-#define ERROR_WRITE_FAIL		0x03		// Check connection, protocol settings and operation more of BNO055
-#define ERROR_REGMAP_INV_ADDR	0x04		// Invalid register address
-#define ERROR_REGMAP_WRITE_DIS	0x05		// Register is read-only
-#define ERROR_WRONG_START_BYTE	0x06		// Check if the first byte
-#define ERROR_BUS_OVERRUN_ERR	0x07		// Resend the command, BNO055 was not able to clear the receive buffer
-#define ERROR_MAX_LEN_ERR		0x08		// Split the command, max fire size can be up to 128 bytes
-#define ERROR_MIN_LEN_ERR		0x09		// Min length of data is less than 1
-#define ERROR_RECV_CHAR_TIMEOUT	0x0A		// Decrease the waiting time between sending of two bytes of one frame
+#define ERROR_WRITE_SUCCESS     0x01  // Everything worker as expected
+#define ERROR_WRITE_FAIL        0x03  // Check connection, protocol settings and operation more of BNO055
+#define ERROR_REGMAP_INV_ADDR   0x04  // Invalid register address
+#define ERROR_REGMAP_WRITE_DIS  0x05  // Register is read-only
+#define ERROR_WRONG_START_BYTE  0x06  // Check if the first byte
+#define ERROR_BUS_OVERRUN_ERR   0x07  // Resend the command, BNO055 was not able to clear the receive buffer
+#define ERROR_MAX_LEN_ERR       0x08  // Split the command, max fire size can be up to 128 bytes
+#define ERROR_MIN_LEN_ERR       0x09  // Min length of data is less than 1
+#define ERROR_RECV_CHAR_TIMEOUT 0x0A  // Decrease the waiting time between sending of two bytes of one frame
 
-#define REG_WRITE				0x00
-#define REG_READ				0x01
-
+#define REG_WRITE 0x00
+#define REG_READ  0x01
 
 /** Datasheet registers **/
 
 /** PAGE 0 **/
 
-//Register definition start
-#define BNO055_CHIP_ID          0x00
-#define BNO055_ACC_ID           0x01
-#define BNO055_MAG_ID           0x02
-#define BNO055_GYR_ID          0x03
-#define BNO055_SW_REV_ID_LSB    0x04
-#define BNO055_SW_REV_ID_MSB    0x05
-#define BNO055_BL_REV_ID        0x06
-#define BNO055_PAGE_ID          0x07
+// Register definition start
+#define BNO055_CHIP_ID       0x00
+#define BNO055_ACC_ID        0x01
+#define BNO055_MAG_ID        0x02
+#define BNO055_GYR_ID        0x03
+#define BNO055_SW_REV_ID_LSB 0x04
+#define BNO055_SW_REV_ID_MSB 0x05
+#define BNO055_BL_REV_ID     0x06
+#define BNO055_PAGE_ID       0x07
 
-//Accelerometer data register
-#define BNO055_ACC_DATA_X_LSB   0x08
-#define BNO055_ACC_DATA_X_MSB   0x09
-#define BNO055_ACC_DATA_Y_LSB   0x0A
-#define BNO055_ACC_DATA_Y_MSB   0x0B
-#define BNO055_ACC_DATA_Z_LSB   0x0C
-#define BNO055_ACC_DATA_Z_MSB   0x0D
+// Accelerometer data register
+#define BNO055_ACC_DATA_X_LSB 0x08
+#define BNO055_ACC_DATA_X_MSB 0x09
+#define BNO055_ACC_DATA_Y_LSB 0x0A
+#define BNO055_ACC_DATA_Y_MSB 0x0B
+#define BNO055_ACC_DATA_Z_LSB 0x0C
+#define BNO055_ACC_DATA_Z_MSB 0x0D
 
-//Magnetometer data register
-#define BNO055_MAG_DATA_X_LSB   0x0E
-#define BNO055_MAG_DATA_X_MSB   0x0F
-#define BNO055_MAG_DATA_Y_LSB   0x10
-#define BNO055_MAG_DATA_Y_MSB   0x11
-#define BNO055_MAG_DATA_Z_LSB   0x12
-#define BNO055_MAG_DATA_Z_MSB   0x13
+// Magnetometer data register
+#define BNO055_MAG_DATA_X_LSB 0x0E
+#define BNO055_MAG_DATA_X_MSB 0x0F
+#define BNO055_MAG_DATA_Y_LSB 0x10
+#define BNO055_MAG_DATA_Y_MSB 0x11
+#define BNO055_MAG_DATA_Z_LSB 0x12
+#define BNO055_MAG_DATA_Z_MSB 0x13
 
-//Gyroscope data register
-#define BNO055_GYR_DATA_X_LSB   0x14
-#define BNO055_GYR_DATA_X_MSB   0x15
-#define BNO055_GYR_DATA_Y_LSB   0x16
-#define BNO055_GYR_DATA_Y_MSB   0x17
-#define BNO055_GYR_DATA_Z_LSB   0x18
-#define BNO055_GYR_DATA_Z_MSB   0x19
+// Gyroscope data register
+#define BNO055_GYR_DATA_X_LSB 0x14
+#define BNO055_GYR_DATA_X_MSB 0x15
+#define BNO055_GYR_DATA_Y_LSB 0x16
+#define BNO055_GYR_DATA_Y_MSB 0x17
+#define BNO055_GYR_DATA_Z_LSB 0x18
+#define BNO055_GYR_DATA_Z_MSB 0x19
 
-//Euler data register
-#define BNO055_EUL_HEADING_LSB  0x1A
-#define BNO055_EUL_HEADING_MSB  0x1B
-#define BNO055_EUL_ROLL_LSB     0x1C
-#define BNO055_EUL_ROLL_MSB     0x1D
-#define BNO055_EUL_PITCH_LSB    0x1E
-#define BNO055_EUL_PITCH_MSB    0x1F
+// Euler data register
+#define BNO055_EUL_HEADING_LSB 0x1A
+#define BNO055_EUL_HEADING_MSB 0x1B
+#define BNO055_EUL_ROLL_LSB    0x1C
+#define BNO055_EUL_ROLL_MSB    0x1D
+#define BNO055_EUL_PITCH_LSB   0x1E
+#define BNO055_EUL_PITCH_MSB   0x1F
 
-//Quaternion data register
-#define BNO055_QUA_DATA_W_LSB   0x20
-#define BNO055_QUA_DATA_W_MSB   0x21
-#define BNO055_QUA_DATA_X_LSB   0x22
-#define BNO055_QUA_DATA_X_MSB   0x23
-#define BNO055_QUA_DATA_Y_LSB   0x24
-#define BNO055_QUA_DATA_Y_MSB   0x25
-#define BNO055_QUA_DATA_Z_LSB   0x26
-#define BNO055_QUA_DATA_Z_MSB   0x27
+// Quaternion data register
+#define BNO055_QUA_DATA_W_LSB 0x20
+#define BNO055_QUA_DATA_W_MSB 0x21
+#define BNO055_QUA_DATA_X_LSB 0x22
+#define BNO055_QUA_DATA_X_MSB 0x23
+#define BNO055_QUA_DATA_Y_LSB 0x24
+#define BNO055_QUA_DATA_Y_MSB 0x25
+#define BNO055_QUA_DATA_Z_LSB 0x26
+#define BNO055_QUA_DATA_Z_MSB 0x27
 
-//Linear acceleration data register
-#define BNO055_LIA_DATA_X_LSB   0x28
-#define BNO055_LIA_DATA_X_MSB   0x29
-#define BNO055_LIA_DATA_Y_LSB   0x2A
-#define BNO055_LIA_DATA_Y_MSB   0x2B
-#define BNO055_LIA_DATA_Z_LSB   0x2C
-#define BNO055_LIA_DATA_Z_MSB   0x2D
+// Linear acceleration data register
+#define BNO055_LIA_DATA_X_LSB 0x28
+#define BNO055_LIA_DATA_X_MSB 0x29
+#define BNO055_LIA_DATA_Y_LSB 0x2A
+#define BNO055_LIA_DATA_Y_MSB 0x2B
+#define BNO055_LIA_DATA_Z_LSB 0x2C
+#define BNO055_LIA_DATA_Z_MSB 0x2D
 
-//Gravity data register
-#define BNO055_GRV_DATA_X_LSB   0x2E
-#define BNO055_GRV_DATA_X_MSB   0x2F
-#define BNO055_GRV_DATA_Y_LSB   0x30
-#define BNO055_GRV_DATA_Y_MSB   0x31
-#define BNO055_GRV_DATA_Z_LSB   0x32
-#define BNO055_GRV_DATA_Z_MSB   0x33
+// Gravity data register
+#define BNO055_GRV_DATA_X_LSB 0x2E
+#define BNO055_GRV_DATA_X_MSB 0x2F
+#define BNO055_GRV_DATA_Y_LSB 0x30
+#define BNO055_GRV_DATA_Y_MSB 0x31
+#define BNO055_GRV_DATA_Z_LSB 0x32
+#define BNO055_GRV_DATA_Z_MSB 0x33
 
-//Temperature data register
-#define BNO055_TEMP             0x34
+// Temperature data register
+#define BNO055_TEMP 0x34
 
-//Status registers
-#define BNO055_CALIB_STAT       0x35
-#define BNO055_ST_RESULT        0x36
-#define BNO055_INT_STATUS       0x37
-#define BNO055_SYS_CLK_STATUS   0x38
-#define BNO055_SYS_STATUS       0x39
-#define BNO055_SYS_ERR          0x3A
+// Status registers
+#define BNO055_CALIB_STAT     0x35
+#define BNO055_ST_RESULT      0x36
+#define BNO055_INT_STATUS     0x37
+#define BNO055_SYS_CLK_STATUS 0x38
+#define BNO055_SYS_STATUS     0x39
+#define BNO055_SYS_ERR        0x3A
 
-//Unit selection register
-#define BNO055_UNIT_SEL         0x3B
+// Unit selection register
+#define BNO055_UNIT_SEL 0x3B
 
-//Mode register
-#define BNO055_OPR_MODE         0x3D
-#define BNO055_PWR_MODE         0x3E
-#define BNO055_SYS_TRIGGER      0x3F
-#define BNO055_TEMP_SOURCE      0x40
+// Mode register
+#define BNO055_OPR_MODE    0x3D
+#define BNO055_PWR_MODE    0x3E
+#define BNO055_SYS_TRIGGER 0x3F
+#define BNO055_TEMP_SOURCE 0x40
 
-//Axis remap register
-#define BNO055_AXIS_MAP_CONFIG  0x41
-#define BNO055_AXIS_MAP_SIGN    0x42
+// Axis remap register
+#define BNO055_AXIS_MAP_CONFIG 0x41
+#define BNO055_AXIS_MAP_SIGN   0x42
 
-//Matrix registers
+// Matrix registers
 #define BNO055_SIC_MATRIX_LSB0 0x43
 #define BNO055_SIC_MATRIX_MSB0 0x44
 #define BNO055_SIC_MATRIX_LSB1 0x45
@@ -146,7 +147,7 @@
 #define BNO055_SIC_MATRIX_LSB8 0x53
 #define BNO055_SIC_MATRIX_MSB8 0x54
 
-//Accelerometer offset register
+// Accelerometer offset register
 #define BNO055_ACC_OFFSET_X_LSB 0x55
 #define BNO055_ACC_OFFSET_X_MSB 0x56
 #define BNO055_ACC_OFFSET_Y_LSB 0x57
@@ -154,7 +155,7 @@
 #define BNO055_ACC_OFFSET_Z_LSB 0x59
 #define BNO055_ACC_OFFSET_Z_MSB 0x5A
 
-//Magnetometer offset register
+// Magnetometer offset register
 #define BNO055_MAG_OFFSET_X_LSB 0x5B
 #define BNO055_MAG_OFFSET_X_MSB 0x5C
 #define BNO055_MAG_OFFSET_Y_LSB 0x5D
@@ -162,7 +163,7 @@
 #define BNO055_MAG_OFFSET_Z_LSB 0x5F
 #define BNO055_MAG_OFFSET_Z_MSB 0x60
 
-//Gyroscope offset register
+// Gyroscope offset register
 #define BNO055_GYR_OFFSET_X_LSB 0x61
 #define BNO055_GYR_OFFSET_X_MSB 0x62
 #define BNO055_GYR_OFFSET_Y_LSB 0x63
@@ -170,19 +171,18 @@
 #define BNO055_GYR_OFFSET_Z_LSB 0x65
 #define BNO055_GYR_OFFSET_Z_MSB 0x66
 
-//Radius register
-#define BNO055_ACC_RADIUS_LSB   0x67
-#define BNO055_ACC_RADIUS_MSB   0x68
-#define BNO055_MAG_RADIUS_LSB   0x69
-#define BNO055_MAG_RADIUS_MSB   0x6A
-
+// Radius register
+#define BNO055_ACC_RADIUS_LSB 0x67
+#define BNO055_ACC_RADIUS_MSB 0x68
+#define BNO055_MAG_RADIUS_LSB 0x69
+#define BNO055_MAG_RADIUS_MSB 0x6A
 
 /** PAGE 1 **/
 
-//Page id register
-#define BNO055_PAGE_ID          0x07
+// Page id register
+#define BNO055_PAGE_ID 0x07
 
-//config register
+// config register
 #define BNO055_ACC_CONFIG       0x08
 #define BNO055_MAG_CONFIG       0x09
 #define BNO055_GYRO_CONFIG_0    0x0A
@@ -209,16 +209,12 @@
 #define BNO055_GYR_AM_THRESH    0x1E
 #define BNO055_GYR_AM_SET       0x1F
 
-/** Power mode settings --> page 20 
+/** Power mode settings --> page 20
     [BNO055_PWR_MODE]:xxxxxxxx
  **/
-typedef enum {
-    POWER_MODE_NORMAL = 0X00,
-    POWER_MODE_LOWPOWER = 0X01,
-    POWER_MODE_SUSPEND = 0X02
-} bno055_powermode_t;
+typedef enum { POWER_MODE_NORMAL = 0X00, POWER_MODE_LOWPOWER = 0X01, POWER_MODE_SUSPEND = 0X02 } bno055_powermode_t;
 
-/** Operation mode settings  --> page 22 
+/** Operation mode settings  --> page 22
     [BNO055_OPR_MODE]:xxxxxxxx
  **/
 typedef enum {
@@ -237,7 +233,7 @@ typedef enum {
     OPERATION_MODE_NDOF = 0X0C
 } bno055_opmode_t;
 
-/** Axis remap settings --> page 26 
+/** Axis remap settings --> page 26
     [BNO055_AXIS_MAP_CONFIG]:xxxxxxxx
  **/
 typedef enum {
@@ -251,7 +247,7 @@ typedef enum {
     AXIS_REMAP_CONFIG_P7 = 0x24
 } bno055_axis_remap_config_t;
 
-/** Axis remap sign settings --> page 26 
+/** Axis remap sign settings --> page 26
     [BNO055_AXIS_MAP_SIGN]:xxxxxxxx
  **/
 typedef enum {
@@ -265,17 +261,17 @@ typedef enum {
     AXIS_REMAP_SIGN_P7 = 0x05
 } bno055_axis_remap_sign_t;
 
-/** Accelerometer configuration settings --> page 29 
+/** Accelerometer configuration settings --> page 29
     [BNO055_ACC_CONFIG]:xxxxxxxx
  **/
-typedef enum{
+typedef enum {
     ACC_CONFIG_2G = 0x00,
     ACC_CONFIG_4G = 0x01,
     ACC_CONFIG_8G = 0x02,
     ACC_CONFIG_16G = 0x03,
 } bno055_acc_g_range_config_t;
 
-typedef enum{
+typedef enum {
     ACC_CONFIG_7_81Hz = 0x00,
     ACC_CONFIG_15_63Hz = 0x04,
     ACC_CONFIG_31_25Hz = 0x08,
@@ -286,7 +282,7 @@ typedef enum{
     ACC_CONFIG_1000Hz = 0x1C,
 } bno055_acc_bandwidth_config_t;
 
-typedef enum{
+typedef enum {
     ACC_CONFIG_NORMAL = 0x0,
     ACC_CONFIG_SUSPEND = 0x20,
     ACC_CONFIG_LOW_POWER_1 = 0x40,
@@ -295,11 +291,11 @@ typedef enum{
     ACC_CONFIG_DEEP_SUSPEND = 0xA0,
 } bno055_acc_operation_mode_config_t;
 
-/** Gyroscope configuration settings --> page 30 
+/** Gyroscope configuration settings --> page 30
     [BNO055_GYR_CONFIG_0]:xxxxxxxx
     [BNO055_GYR_CONFIG_1]:xxxxxxxx  //This for the operation mode
  **/
-typedef enum{
+typedef enum {
     GYR_CONFIG_2000DPS = 0x00,
     GYR_CONFIG_1000DPS = 0x01,
     GYR_CONFIG_500DPS = 0x02,
@@ -307,7 +303,7 @@ typedef enum{
     GYR_CONFIG_125DPS = 0x04,
 } bno055_gyr_range_config_t;
 
-typedef enum{
+typedef enum {
     GYR_CONFIG_523Hz = 0x00,
     GYR_CONFIG_230Hz = 0x08,
     GYR_CONFIG_116Hz = 0x10,
@@ -318,7 +314,7 @@ typedef enum{
     GYR_CONFIG_32Hz = 0x38,
 } bno055_gyr_bandwidth_config_t;
 
-typedef enum{
+typedef enum {
     GYR_CONFIG_NORMAL = 0x0,
     GYR_CONFIG_FAST_POWER_UP = 0x01,
     GYR_CONFIG_DEEP_SUSPEND = 0x02,
@@ -326,10 +322,10 @@ typedef enum{
     GYR_CONFIG_ADVANCED_POWERSAVE = 0x04,
 } bno055_gyr_operation_mode_config_t;
 
-/** Magnetometer configuration settings --> page 31 
+/** Magnetometer configuration settings --> page 31
     [BNO055_MAG_CONFIG]:xxxxxxxx
  **/
-typedef enum{
+typedef enum {
     MAG_CONFIG_2Hz = 0x00,
     MAG_CONFIG_6Hz = 0x01,
     MAG_CONFIG_8Hz = 0x02,
@@ -340,14 +336,14 @@ typedef enum{
     MAG_CONFIG_30Hz = 0x07,
 } bno055_mag_data_output_rate_config_t;
 
-typedef enum{
+typedef enum {
     MAG_CONFIG_LOW_POWER = 0x00,
     MAG_CONFIG_REGULAR = 0x08,
     MAG_CONFIG_ENHANCED_REGULAR = 0x10,
     MAG_CONFIG_HIGH_ACCURACY = 0x18,
 } bno055_mag_operation_mode_config_t;
 
-typedef enum{
+typedef enum {
     MAG_CONFIG_NORMAL = 0x0,
     MAG_CONFIG_SLEEP = 0x20,
     MAG_CONFIG_SUSPEND = 0x40,
@@ -358,7 +354,7 @@ typedef enum{
     [BNO055_UNIT_SEL]: xxxxxxxx
  **/
 
-/** 
+/**
  * Table 3-11: Unit selection for BNO055 sensor
  * | Data                     | Units            | [Reg Addr]: Register Value   |
  * |--------------------------|------------------|-----------------------------|
@@ -381,8 +377,8 @@ typedef enum{
  **/
 
 typedef enum {
-    ACCELERATION_M_S2 = 0x00, 
-    ACCELERATION_MG = 0x01, 
+    ACCELERATION_M_S2 = 0x00,
+    ACCELERATION_MG = 0x01,
 
     LINEAR_ACCELERATION_M_S2 = 0x00,
 
@@ -394,19 +390,16 @@ typedef enum {
 
     TEMPERATURE_C = 0x00,
     TEMPERATURE_F = 0x10
-    
+
 } bno055_unit_selection_t;
 
 /** Data output selection in fusion data settings --> page 32
     [BNO055_UNIT_SEL]: xxxxxxxx
  **/
-typedef enum {
-    WINDOWS = 0x00,
-    ANDROID = 0x80
-} bno055_data_output_format_t;
+typedef enum { WINDOWS = 0x00, ANDROID = 0x80 } bno055_data_output_format_t;
 
 /** Data output selection in fusion data settings --> page 33
-    
+
     [BNO055_ACC_OFFSET_X_LSB]: 0x00
     [BNO055_ACC_OFFSET_X_MSB]: 0x00
     [BNO055_ACC_OFFSET_Y_LSB]: 0x00
@@ -427,7 +420,7 @@ typedef enum {
     [BNO055_GYR_OFFSET_Y_MSB]: 0x00
     [BNO055_GYR_OFFSET_Z_LSB]: 0x00
     [BNO055_GYR_OFFSET_Z_MSB]: 0x00
-    
+
     [BNO055_ACC_RADIUS_LSB]: 0x00
     [BNO055_ACC_RADIUS_MSB]: 0x00
 
@@ -436,143 +429,136 @@ typedef enum {
 
  **/
 typedef struct {
-  int16_t acc_offset_x; 
-  int16_t acc_offset_y; 
-  int16_t acc_offset_z; 
+    int16_t acc_offset_x;
+    int16_t acc_offset_y;
+    int16_t acc_offset_z;
 
-  int16_t mag_offset_x; 
-  int16_t mag_offset_y; 
-  int16_t mag_offset_z; 
+    int16_t mag_offset_x;
+    int16_t mag_offset_y;
+    int16_t mag_offset_z;
 
-  int16_t gyr_offset_x;
-  int16_t gyr_offset_y;
-  int16_t gyr_offset_z;
+    int16_t gyr_offset_x;
+    int16_t gyr_offset_y;
+    int16_t gyr_offset_z;
 
-  int16_t acc_radius; 
-  int16_t mag_radius; 
+    int16_t acc_radius;
+    int16_t mag_radius;
 
 } bno055_offsets_t;
 
-typedef struct
-{
-    float x; 
+typedef struct {
+    float x;
     float y;
     float z;
 } bno055_acc_t;
 
-typedef struct
-{
+typedef struct {
     float x;
     float y;
     float z;
 } bno055_mag_t;
 
-typedef struct
-{
-    float x; 
-    float y; 
-    float z; 
+typedef struct {
+    float x;
+    float y;
+    float z;
 } bno055_gyr_t;
 
-typedef struct
-{
+typedef struct {
     float h;
     float r;
     float p;
 } bno055_euler_t;
 
-typedef struct
-{
-    float w; 
-    float x; 
-    float y; 
-    float z; 
+typedef struct {
+    float w;
+    float x;
+    float y;
+    float z;
 } bno055_quaternion_t;
 
-typedef struct
-{
+typedef struct {
     float x;
     float y;
     float z;
 } bno055_linear_acc_t;
 
-typedef struct
-{
+typedef struct {
     float x;
     float y;
     float z;
 } bno055_gravity_t;
 
-typedef struct{
-    bno055_powermode_t                      pwr_mode;
-    bno055_opmode_t                         op_mode;
-    bno055_axis_remap_config_t              axis_remap_conf;
-    bno055_axis_remap_sign_t                axis_remap_sign;
-    bno055_acc_g_range_config_t             acc_g_range;
-    bno055_acc_bandwidth_config_t           acc_bandwidth;
-    bno055_acc_operation_mode_config_t      acc_operation_mode;
-    bno055_gyr_range_config_t               gyr_range;
-    bno055_gyr_bandwidth_config_t           gyr_bandwidth;
-    bno055_gyr_operation_mode_config_t      gyr_op_mode;
-    bno055_mag_data_output_rate_config_t    mag_data_rate;
-    bno055_mag_operation_mode_config_t      mag_op_mode;
-    bno055_mag_power_mode_config_t          mag_pwr_mode;
-    bno055_unit_selection_t                 unit_sel;
+typedef struct {
+    bno055_powermode_t pwr_mode;
+    bno055_opmode_t op_mode;
+    bno055_axis_remap_config_t axis_remap_conf;
+    bno055_axis_remap_sign_t axis_remap_sign;
+    bno055_acc_g_range_config_t acc_g_range;
+    bno055_acc_bandwidth_config_t acc_bandwidth;
+    bno055_acc_operation_mode_config_t acc_operation_mode;
+    bno055_gyr_range_config_t gyr_range;
+    bno055_gyr_bandwidth_config_t gyr_bandwidth;
+    bno055_gyr_operation_mode_config_t gyr_op_mode;
+    bno055_mag_data_output_rate_config_t mag_data_rate;
+    bno055_mag_operation_mode_config_t mag_op_mode;
+    bno055_mag_power_mode_config_t mag_pwr_mode;
+    bno055_unit_selection_t unit_sel;
 
 } bno055_conf_t;
 
-typedef struct{
-    uint8_t chip_id; /**< chip_id of bno055 */
+typedef struct {
+    uint8_t chip_id;    /**< chip_id of bno055 */
     uint16_t sw_rev_id; /**< software revision id of bno055 */
-    uint8_t page_id; /**< page_id of bno055 */
-    uint8_t acc_id; /**< accel revision id of bno055 */
-    uint8_t mag_id; /**< mag revision id of bno055 */
-    uint8_t gyr_id; /**< gyro revision id of bno055 */
-    uint8_t bl_rev_id; /**< boot loader revision id of bno055 */
-}  bno055_verification_t;
+    uint8_t page_id;    /**< page_id of bno055 */
+    uint8_t acc_id;     /**< accel revision id of bno055 */
+    uint8_t mag_id;     /**< mag revision id of bno055 */
+    uint8_t gyr_id;     /**< gyro revision id of bno055 */
+    uint8_t bl_rev_id;  /**< boot loader revision id of bno055 */
+} bno055_verification_t;
 
-void bno055_set_i2c_handler(I2C_HandleTypeDef *);
-uint8_t bno055_writeData(uint8_t *);
-uint8_t bno055_readData(uint8_t, uint8_t *, uint8_t);
+void bno055_set_i2c_handler(I2C_HandleTypeDef*);
+uint8_t bno055_writeData(uint8_t*);
+uint8_t bno055_readData(uint8_t, uint8_t*, uint8_t);
 void bno055_delay(uint32_t);
 
-BNO055_FUNC_RETURN bno055_init(bno055_conf_t *, bno055_verification_t *);
+BNO055_FUNC_RETURN bno055_init(bno055_conf_t*, bno055_verification_t*);
 
-BNO055_FUNC_RETURN bno055_read_acc_x(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_acc_y(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_acc_z(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_acc_xyz(bno055_acc_t *);
+BNO055_FUNC_RETURN bno055_read_acc_x(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_acc_y(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_acc_z(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_acc_xyz(bno055_acc_t*);
 
-BNO055_FUNC_RETURN bno055_read_mag_x(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_mag_y(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_mag_z(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_mag_xyz(bno055_mag_t *);
+BNO055_FUNC_RETURN bno055_read_mag_x(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_mag_y(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_mag_z(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_mag_xyz(bno055_mag_t*);
 
-BNO055_FUNC_RETURN bno055_read_gyr_x(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_gyr_y(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_gyr_z(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_gyr_xyz(bno055_gyr_t *);
+BNO055_FUNC_RETURN bno055_read_gyr_x(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_gyr_y(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_gyr_z(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_gyr_xyz(bno055_gyr_t*);
 
-BNO055_FUNC_RETURN bno055_read_euler_h(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_euler_r(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_euler_p(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_euler_hrp(bno055_euler_t *);
+BNO055_FUNC_RETURN bno055_read_euler_h(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_euler_r(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_euler_p(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_euler_hrp(bno055_euler_t*);
 
-BNO055_FUNC_RETURN bno055_read_quaternion_w(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_quaternion_x(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_quaternion_y(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_quaternion_z(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_quaternion_wxyz(bno055_quaternion_t *);
+BNO055_FUNC_RETURN bno055_read_quaternion_w(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_quaternion_x(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_quaternion_y(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_quaternion_z(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_quaternion_wxyz(bno055_quaternion_t*);
 
-BNO055_FUNC_RETURN bno055_read_linear_acc_x(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_linear_acc_y(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_linear_acc_z(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_linear_acc_xyz(bno055_linear_acc_t *);
+BNO055_FUNC_RETURN bno055_read_linear_acc_x(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_linear_acc_y(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_linear_acc_z(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_linear_acc_xyz(bno055_linear_acc_t*);
 
-BNO055_FUNC_RETURN bno055_read_gravity_x(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_gravity_y(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_gravity_z(uint16_t *);
-BNO055_FUNC_RETURN bno055_read_gravity_xyz(bno055_gravity_t *);
+BNO055_FUNC_RETURN bno055_read_gravity_x(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_gravity_y(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_gravity_z(uint16_t*);
+BNO055_FUNC_RETURN bno055_read_gravity_xyz(bno055_gravity_t*);
 
 BNO055_FUNC_RETURN bno055_get_acc_calib_status();
 BNO055_FUNC_RETURN bno055_get_mag_calib_status();
@@ -581,4 +567,4 @@ BNO055_FUNC_RETURN bno055_get_gyr_calib_status();
 extern bno055_conf_t default_bno055_config;
 extern bno055_verification_t default_bno055_verification;
 
-#endif // BNO055_H
+#endif  // BNO055_H

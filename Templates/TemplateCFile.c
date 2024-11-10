@@ -10,10 +10,10 @@
 
 #include "TemplateCFile.h"
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
-// YOUR CODE 
+// YOUR CODE
 
 #ifdef __cplusplus
 }

@@ -8,12 +8,12 @@
 #ifndef SerialMonitor_H
 #define SerialMonitor_H
 
-#include "stm32f4xx.h"
 #include <stdio.h>
+
+#include "stm32f4xx.h"
 
 UART_HandleTypeDef huart6;
 DMA_HandleTypeDef hdma_usart1_tx;
-
 
 bool is_USART_enabled();
 void USART_write(int ch);

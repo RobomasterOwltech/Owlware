@@ -44,7 +44,7 @@ uint16_t ControllerPWM::get_prescaler() { return timer->Init.Prescaler; }
 void ControllerPWM::calibrateSignal() {}
 #include "ControllerPWM.hpp"
 
-    ControllerPWM::ControllerPWM(TIM_HandleTypeDef* _timer, uint16_t _channel) {
+ControllerPWM::ControllerPWM(TIM_HandleTypeDef* _timer, uint16_t _channel) {
     timer = _timer;
     channel = _channel;
 

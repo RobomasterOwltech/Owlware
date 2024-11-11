@@ -14,11 +14,6 @@
 
 typedef enum { POS, VEL, TOR } OperationModes;
 
-// typedef union {
-//     ControllerCAN* can;
-//     ControllerPWM* pwm;
-// } Controller;
-
 class IntfMotor {
     protected:
         Controller* contr; //polymorphism 
@@ -29,17 +24,18 @@ class IntfMotor {
         int16_t minTorque;
         int16_t maxPosition;
         int16_t minPosition;
-        int8_t Direction;
         int16_t maxAngle;
         int16_t minAngle;
         int16_t maxCurrent;
         int16_t minCurrent;
-        uint8_t ID; 
 
-        int16_t ref;
-        uint8_t mode;
-        uint8_t dir;
+        uint8_t id; 
+        int8_t direction;
         uint16_t runFreq;
+        uint8_t mode;
+
+        int16_t ref; //current reference of the motor
+        
 
     public:
         IntfMotor();

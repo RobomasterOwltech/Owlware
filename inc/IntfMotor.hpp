@@ -41,15 +41,6 @@ class IntfMotor {
         uint8_t dir;
         uint16_t runFreq;
 
-        virtual void actuateVelocity(int16_t ref);
-        virtual void actuatePosition(int16_t ref);
-        virtual void actuateTorque(int16_t ref);
-
-        void setVelocity();
-        void setTorque();
-        void setPosition();
-        // void setTemp();
-
     public:
         IntfMotor();
         //IntfMotor(ControllerCAN* controller,  OperationModes mode, uint8_t direction);
@@ -58,7 +49,7 @@ class IntfMotor {
         virtual float getFeedback()=0;
         void actuate(int16_t ref);
         // The input value is an angular velocity
-        virtual void setControlType(OperationModes mode){};
+        virtual void setControlType(OperationModes mode);
         void invert(uint8_t direction);
         void stop(int16_t ref);
 

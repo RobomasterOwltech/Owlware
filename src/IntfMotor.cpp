@@ -20,6 +20,8 @@ IntfMotor::IntfMotor(Controller* controller, OperationalRanges* attr, OperationM
 }
 
 void IntfMotor::actuate(int16_t ref) {
+    this->ref = ref;
+    
     if (mode == VEL) {
         controller->velocity(ref);
     } else if (mode == TOR) {

@@ -33,7 +33,7 @@ class IntfMotor {
         int8_t direction;
         uint16_t runFreq;
         uint8_t mode;
-        int16_t ref; //referencia catual del motor 
+        int16_t ref; //referencia actual del motor 
         
 
     public:
@@ -44,13 +44,13 @@ class IntfMotor {
         virtual float getFeedback()=0;
         void actuate(int16_t ref);
         // The input value is an angular velocity
-        virtual void setControlType(OperationModes mode);
+        virtual void setControlType(OperationModes mode)=0;
         void invert(uint8_t direction);
         void stop(int16_t ref);
 
-        virtual void actuateVelocity(int16_t ref);
-        virtual void actuatePosition(int16_t ref);
-        virtual void actuateTorque(int16_t ref);
+        virtual void actuateVelocity(int16_t ref)=0;
+        virtual void actuatePosition(int16_t ref)=0;
+        virtual void actuateTorque(int16_t ref)=0;
 
 
         ~IntfMotor();

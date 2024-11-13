@@ -21,13 +21,13 @@ IntfMotor::IntfMotor(Controller* controller, OperationalRanges* attr, OperationM
 
 void IntfMotor::actuate(int16_t ref) {
     this->ref = ref;
-    
+
     if (mode == VEL) {
-        controller->velocity(ref);
+        actuateVelocity(int16_t ref);
     } else if (mode == TOR) {
-        controller->torque(ref);
+        actuateTorque(int16_t ref);
     } else if (mode == POS) {
-        controller->pos(ref);
+        actuatePosition(int16_t ref);
     }
 }
 

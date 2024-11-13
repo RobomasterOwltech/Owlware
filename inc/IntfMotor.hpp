@@ -33,8 +33,7 @@ class IntfMotor {
         int8_t direction;
         uint16_t runFreq;
         uint8_t mode;
-
-        int16_t ref; //current reference of the motor
+        int16_t ref; //referencia catual del motor 
         
 
     public:
@@ -48,6 +47,11 @@ class IntfMotor {
         virtual void setControlType(OperationModes mode);
         void invert(uint8_t direction);
         void stop(int16_t ref);
+
+        virtual void actuateVelocity(int16_t ref);
+        virtual void actuatePosition(int16_t ref);
+        virtual void actuateTorque(int16_t ref);
+
 
         ~IntfMotor();
 };

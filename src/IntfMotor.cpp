@@ -6,42 +6,34 @@
  */
 #include "IntfMotor.hpp"
 
-IntfMotor::IntfMotor() {
-    // Empty
+IntfMotor::IntfMotor(){
+    //Empty
 }
-IntfMotor::IntfMotor(ControllerCAN* controller, OperationalRanges* attr, OperationModes mode, uint8_t direction) {
-    // TODO: Check pointers
-    // TODO: validate parameters before successful obj creation
-    this->contr.can = controller;
-    this->attr = attr;
-    this->dir = direction;
+
+IntfMotor::IntfMotor(Controller* controller, OperationModes mode, uint8_t direction) {
+
+    // Asignaciones
+    this->contr = controller;  
+    this->direction = direction;
     this->mode = mode;
 }
 
-IntfMotor::IntfMotor(ControllerPWM* controller, OperationalRanges* attr, OperationModes mode, uint8_t direction) {
-    this->contr.pwm = controller;
-    this->attr = attr;
-    this->dir = direction;
-    this->mode = mode;
-}
+void IntfMotor::actuate(int16_t ref) {
+    this->ref = ref;
 
-void IntfMotor::actuate() {
-    switch (mode) {
-        case POS:
-            actuatePosition();
-            break;
-        case VEL:
-            actuateVelocity();
-            break;
-        case TOR:
-            actuateTorque();
-            break;
-        default:
-            // TODO: Throw an error
-            break;
+    if (mode == VEL) {
+        actuateVelocity(ref);
+    } else if (mode == TOR) {
+        actuateTorque(ref);
+    } else if (mode == POS) {
+        actuatePosition(ref);
     }
 }
 
-void IntfMotor::invert() { this->dir *= -1; }
+void IntfMotor::invert(uint8_t direction){
+    this -> direction *= -1;
+}
 
-void IntfMotor::stop() { this->setReference(0); }
+void IntfMotor::stop(int16_t ref){
+    this -> ref=0;
+}

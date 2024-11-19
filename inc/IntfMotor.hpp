@@ -14,50 +14,46 @@
 
 typedef enum { POS, VEL, TOR } OperationModes;
 
-typedef struct {
-    float maxVelocity;
-    float minVelocity;
-    float maxTorque;
-    float minTorque;
-    float maxPosition;
-    float minPosition;
-    float maxTemp;
-    float minTemp;
-} OperationalRanges;
-
-typedef union {
-    ControllerCAN* can;
-    ControllerPWM* pwm;
-} Controller;
-
-//TODO: Create a new union for selecting the ID
-// bc it can be a channel, or for can
 class IntfMotor {
-   protected:
-    Controller contr;
-    OperationalRanges* attr;
+    protected:
+        Controller* contr; //polymorphism 
 
-    uint8_t mode;
-    uint8_t dir;
-    uint16_t runFreq;
+        int16_t maxVel;
+        int16_t minVel;
+        int16_t maxTorque;
+        int16_t minTorque;
+        int16_t maxPosition;
+        int16_t minPosition;
+        int16_t maxAngle;
+        int16_t minAngle;
+        int16_t maxCurrent;
+        int16_t minCurrent;
 
-    virtual void actuateVelocity();
-    virtual void actuatePosition();
-    virtual void actuateTorque();
+        uint8_t id; 
+        int8_t direction;
+        uint16_t runFreq;
+        uint8_t mode;
+        int16_t ref; //referencia actual del motor 
+        
 
-   public:
-    IntfMotor();
-    IntfMotor(ControllerCAN* controller, OperationalRanges* attr, OperationModes mode, uint8_t direction);
-    IntfMotor(ControllerPWM* controller, OperationalRanges* attr, OperationModes mode, uint8_t direction);
-    virtual float getFeedback();
-    void actuate();
-    // The input value is an angular velocity
-    virtual void setReference(float w){};
-    virtual void setControlType(OperationModes mode){};
-    void invert();
-    void stop();
+    public:
+        IntfMotor();
+        //IntfMotor(ControllerCAN* controller,  OperationModes mode, uint8_t direction);
+        //IntfMotor(ControllerPWM* controller, OperationModes mode, uint8_t direction);
+        IntfMotor(Controller* controller, OperationModes mode, uint8_t direction);
+        virtual float getFeedback()=0;
+        void actuate(int16_t ref);
+        // The input value is an angular velocity
+        virtual void setControlType(OperationModes mode)=0;
+        void invert(uint8_t direction);
+        void stop(int16_t ref);
 
-    ~IntfMotor();
+        virtual void actuateVelocity(int16_t ref)=0;
+        virtual void actuatePosition(int16_t ref)=0;
+        virtual void actuateTorque(int16_t ref)=0;
+
+
+        ~IntfMotor();
 };
 
 #endif /* IntfMotor */

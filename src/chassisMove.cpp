@@ -1,51 +1,44 @@
 #include "chassisMove.hpp"
 
-// Constructor
-chassisMove::chassisMove(IntfMotor* leftFrontMotor, IntfMotor* rightFrontMotor,
-                         IntfMotor* leftBackMotor, IntfMotor* rightBackMotor, float maxMotorSpeed)
-    : leftFrontMotor(leftFrontMotor), rightFrontMotor(rightFrontMotor),
-      leftBackMotor(leftBackMotor), rightBackMotor(rightBackMotor), maxMotorSpeed(maxMotorSpeed) {}
-
-// Normalizar la velocidad para que esté dentro del rango permitido
 float chassisMove::normalizeSpeed(float speed) {
     if (speed > maxMotorSpeed) return maxMotorSpeed;
     if (speed < -maxMotorSpeed) return -maxMotorSpeed;
     return speed;
 }
 
-// Traducir joystick a velocidades de las ruedas
+chassisMove::chassisMove(IntfMotor* leftFrontMotor, IntfMotor* rightFrontMotor,
+                         IntfMotor* leftBackMotor, IntfMotor* rightBackMotor, 
+                         float maxMotorSpeed)
+    : leftFrontMotor(leftFrontMotor), rightFrontMotor(rightFrontMotor),
+      leftBackMotor(leftBackMotor), rightBackMotor(rightBackMotor),
+      maxMotorSpeed(maxMotorSpeed) {}
+
+
 void chassisMove::joystickToMotors(float x, float y, float w) {
-    float wheel_speed[4];
+    //v=M*u
+    // u
+    Eigen::Vector3f joystick_input(x, y, w);
 
-    // Calcular velocidades de las ruedas mecanum
-    wheel_speed[0] = -x - y + w; // Delantera izquierda
-    wheel_speed[1] = x - y + w;  // Delantera derecha
-    wheel_speed[2] = x + y + w;  // Trasera derecha
-    wheel_speed[3] = -x + y + w; // Trasera izquierda
+    // M
+    Eigen::MatrixXf control_matrix(4, 3);
+    control_matrix << -1, -1,  CHASSIS_RADIUS,  // Delantera izquierda
+                       1, -1,  CHASSIS_RADIUS,  // Delantera derecha
+                       1,  1,  CHASSIS_RADIUS,  // Trasera derecha
+                      -1,  1,  CHASSIS_RADIUS;  // Trasera izquierda
 
-    // Normalizar y actuar las velocidades en los motores
-    leftFrontMotor->actuate(normalizeSpeed(wheel_speed[0]));
-    rightFrontMotor->actuate(normalizeSpeed(wheel_speed[1]));
-    rightBackMotor->actuate(normalizeSpeed(wheel_speed[2]));
-    leftBackMotor->actuate(normalizeSpeed(wheel_speed[3]));
-}
+    // v
+    Eigen::VectorXf wheel_speed = control_matrix * joystick_input;
+    wheel_speed = wheel_speed.unaryExpr([this](float speed) { return normalizeSpeed(speed); });
 
-void getJoystickRotation(){
-    w = (-wheel_speed[0] - wheel_speed[1] - wheel_speed[2] - wheel_speed[3]) * MOTOR_SPEED_TO_CHASSIS_SPEED_WZ / MOTOR_DISTANCE_TO_CENTER;
-}
-
-// Actualizar el movimiento basado en joystick
-void chassisMove::update() {
-    float x = getJoystickX();
-    float y = getJoystickY();
-    float w = getJoystickRotation();
-
-    joystickToMotors(x, y, w);
+    leftFrontMotor->actuate(wheel_speed[0]);
+    rightFrontMotor->actuate(wheel_speed[1]);
+    rightBackMotor->actuate(wheel_speed[2]);
+    leftBackMotor->actuate(wheel_speed[3]);
 }
 
 void chassisMove::stop() {
-    leftMotor->stop(0); 
-    rightMotor->stop(0); 
-    leftBackMotor->stop(0); 
-    rightBackMotor->stop(0); 
+    leftFrontMotor->stop(0);
+    rightFrontMotor->stop(0);
+    leftBackMotor->stop(0);
+    rightBackMotor->stop(0);
 }

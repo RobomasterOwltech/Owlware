@@ -1,11 +1,11 @@
 #ifndef CHASSIS_MOVE_HPP
 #define CHASSIS_MOVE_HPP
 
-#include "IntfMotor.hpp"
+#include <Eigen/Dense> 
+#include "IntfMotor.hpp" 
 
-#define MOTOR_SPEED_TO_CHASSIS_SPEED_WZ
-#define MOTOR_DISTANCE_TO_CENTER
-
+#define CHASSIS_RADIUS 0.3f  // Radio del chasis (distancia del centro a una rueda) en metros
+#define MAX_MOTOR_SPEED 1.0f // Velocidad máxima del motor
 
 class chassisMove {
 private:
@@ -19,18 +19,13 @@ private:
     float normalizeSpeed(float speed);
 
 public:
-    // Constructor
     chassisMove(IntfMotor* leftFrontMotor, IntfMotor* rightFrontMotor,
-                IntfMotor* leftBackMotor, IntfMotor* rightBackMotor, float maxMotorSpeed = 100.0f);
+                IntfMotor* leftBackMotor, IntfMotor* rightBackMotor, 
+                float maxMotorSpeed = MAX_MOTOR_SPEED);
 
-    // Traducir joystick a movimiento de motores
     void joystickToMotors(float x, float y, float w);
 
-    // Método para actualizar las velocidades basándose en el joystick
-    void update();
-
-    //Metodo para detener motores 
     void stop();
 };
 
-#endif /* CHASSIS_MOVE_HPP */
+#endif // CHASSIS_MOVE_HPP

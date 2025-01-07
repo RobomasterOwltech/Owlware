@@ -19,11 +19,13 @@ float chassisMove::normalizeSpeed(float speed) {
  * @param theta_robot Ángulo actual del robot.
  * @return La velocidad angular normalizada en radianes por segundo.
  */
-float chassisMove::normalizeW(float theta_joy_rads, float theta_robot_rads) {
+float chassisMove::normalizeW(float theta_joy_rads) {
     float angle_error = theta_joy_rads - theta_robot_rads;
     if (angle_error > M_PI) angle_error -= 2 * PI;
     if (angle_error < -M_PI) angle_error += 2 * PI;
     float w_rs = K_TWIST * angle_error;
+    //TODO: si se actualiza?
+    //theta_robot_rads=w_rs; 
     return w_rs;
 }
 
@@ -47,11 +49,11 @@ chassisMove::chassisMove(IntfMotor* leftFrontMotor, IntfMotor* rightFrontMotor,
  * @param theta_robot Ángulo de orientación del robot (en radianes).
  * @param theta_joy Ángulo de orientación del joystick2 (en radianes).
  */
-void chassisMove::joystickToMotors(float x1, float y1, float x2, float y2, float theta_robot_rads) {
+void chassisMove::joystickToMotors(float x1, float y1, float x2, float y2) {
     // Cálculo del ángulo deseado 
     float theta_joy_rads = atan2(y2, x2);
     // Cálculo de la torsión (velocidad angular)
-    float w_rs = normalizeW(theta_joy_rads, theta_robot_rads)
+    float w_rs = normalizeW(theta_joy_rads)
 
     // u
     Eigen::Vector3f joystick_input(x1, y1, w);

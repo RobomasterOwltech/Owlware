@@ -11,17 +11,18 @@
  *
  */
 
-#ifndef CHASSIS_MOVE_HPP
-#define CHASSIS_MOVE_HPP
-
 #include <Eigen/Dense> 
 #include "IntfMotor.hpp" 
 #include "ControllerCAN.hpp"
 
+#ifndef CHASSIS_MOVE_HPP
+#define CHASSIS_MOVE_HPP
 #define CHASSIS_RADIUS 0.3f  // Radio del chasis (distancia del centro a una rueda) en metros
 #define MAX_MOTOR_SPEED 465.0f // Velocidad máxima del motor rpm
 #define K_TWIST 1.0f         // Sensibilidad para torsión del chasis
 #define PI 3.14159265358979323846
+
+float theta_robot_rads; //angulo actual del robot
 
 /**
  * @brief Clase para controlar el movimiento de un chasis mecanum utilizando joysticks.
@@ -40,14 +41,14 @@ private:
     float maxMotorSpeed_rpm; 
 
     float normalizeSpeed(float speed);
-    float normalizeW(float w);
+    float normalizeW(float theta_joy_rads);
 
 public:
     chassisMove(IntfMotor* leftFrontMotor, IntfMotor* rightFrontMotor,
                 IntfMotor* leftBackMotor, IntfMotor* rightBackMotor, 
                 float maxMotorSpeed_rpm = MAX_MOTOR_SPEED);
 
-    void joystickToMotors(float x1, float y1, float x2, float y2, float theta_robot);
+    void joystickToMotors(float x1, float y1, float x2, float y2);
 
     void stop();
 };

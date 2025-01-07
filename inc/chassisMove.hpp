@@ -16,9 +16,10 @@
 
 #include <Eigen/Dense> 
 #include "IntfMotor.hpp" 
+#include "ControllerCAN.hpp"
 
 #define CHASSIS_RADIUS 0.3f  // Radio del chasis (distancia del centro a una rueda) en metros
-#define MAX_MOTOR_SPEED 1.0f // Velocidad máxima del motor
+#define MAX_MOTOR_SPEED 465.0f // Velocidad máxima del motor rpm
 #define K_TWIST 1.0f         // Sensibilidad para torsión del chasis
 #define PI 3.14159265358979323846
 
@@ -36,7 +37,7 @@ private:
     IntfMotor* leftBackMotor;
     IntfMotor* rightBackMotor;
 
-    float maxMotorSpeed; 
+    float maxMotorSpeed_rpm; 
 
     float normalizeSpeed(float speed);
     float normalizeW(float w);
@@ -44,7 +45,7 @@ private:
 public:
     chassisMove(IntfMotor* leftFrontMotor, IntfMotor* rightFrontMotor,
                 IntfMotor* leftBackMotor, IntfMotor* rightBackMotor, 
-                float maxMotorSpeed = MAX_MOTOR_SPEED);
+                float maxMotorSpeed_rpm = MAX_MOTOR_SPEED);
 
     void joystickToMotors(float x1, float y1, float x2, float y2, float theta_robot);
 

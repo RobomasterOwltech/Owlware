@@ -7,8 +7,8 @@
  * @return La velocidad normalizada.
 */
 float chassisMove::normalizeSpeed(float speed) {
-    if (speed > maxMotorSpeed) return maxMotorSpeed;
-    if (speed < -maxMotorSpeed) return -maxMotorSpeed;
+    if (speed > maxMotorSpeed_rpm) return maxMotorSpeed_rpm;
+    if (speed < -maxMotorSpeed_rpm) return -maxMotorSpeed_rpm;
     return speed;
 }
 
@@ -32,7 +32,7 @@ chassisMove::chassisMove(IntfMotor* leftFrontMotor, IntfMotor* rightFrontMotor,
                          float maxMotorSpeed)
     : leftFrontMotor(leftFrontMotor), rightFrontMotor(rightFrontMotor),
       leftBackMotor(leftBackMotor), rightBackMotor(rightBackMotor),
-      maxMotorSpeed(maxMotorSpeed) {}
+      maxMotorSpeed(maxMotorSpeed_rpm) {}
 
 /**
  * @brief Convierte las entradas de los joysticks en velocidades de los motores.

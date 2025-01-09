@@ -22,8 +22,6 @@
 #define K_TWIST 1.0f         // Sensibilidad para torsión del chasis
 #define PI 3.14159265358979323846
 
-float theta_robot_rads; //angulo actual del robot
-
 /**
  * @brief Clase para controlar el movimiento de un chasis mecanum utilizando joysticks.
  * 
@@ -37,11 +35,11 @@ private:
     IntfMotor* rightFrontMotor;
     IntfMotor* leftBackMotor;
     IntfMotor* rightBackMotor;
+    float currentMotorSpeeds[4];
 
     float maxMotorSpeed_rpm; 
 
     float normalizeSpeed(float speed);
-    float normalizeW(float theta_joy_rads);
 
 public:
     chassisMove(IntfMotor* leftFrontMotor, IntfMotor* rightFrontMotor,

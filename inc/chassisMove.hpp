@@ -35,9 +35,17 @@ private:
     IntfMotor* rightFrontMotor;
     IntfMotor* leftBackMotor;
     IntfMotor* rightBackMotor;
-    float currentMotorSpeeds[4];
-
     float maxMotorSpeed_rpm; 
+
+    BaseType_t xQueueSend(
+        QueueHandle_t wheelSpeedQueue,
+        const void * adjusted_speed,
+        TickType_t xTicksToWait
+    );
+    // Cola de 10 elementos de tamaño float[4] para send
+    wheelSpeedQueue = xQueueCreate(10, sizeof(float[4]));
+    void queueSend();
+    Eigen::Vector4f queueReceive();
 
     float normalizeSpeed(float speed);
 

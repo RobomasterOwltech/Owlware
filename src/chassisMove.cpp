@@ -6,23 +6,6 @@
  * @param speed Velocidad a normalizar.
  * @return La velocidad normalizada.
 */
-float chassisMove::normalizeSpeed(float speed) {
-    if (speed > maxMotorSpeed_rpm) return maxMotorSpeed_rpm;
-    if (speed < -maxMotorSpeed_rpm) return -maxMotorSpeed_rpm;
-    return speed;
-}
-
-// Función para recibir las velocidades de los motores
-void queueReceive() {
-    float actualMotorSpeeds[4];
-    if (xQueueReceive(motorSpeedQueue, &actualMotorSpeeds, portMAX_DELAY) == pdPASS) {
-        for (int i = 0; i < 4; i++) {
-            currentMotorSpeeds[i] = actualMotorSpeeds[i]; // Almacena las velocidades actuales
-        }
-    } else {
-        printf("Error.\n");
-    }
-}
 
 chassisMove::chassisMove(IntfMotor* leftFrontMotor, IntfMotor* rightFrontMotor,
                          IntfMotor* leftBackMotor, IntfMotor* rightBackMotor, 
@@ -30,6 +13,41 @@ chassisMove::chassisMove(IntfMotor* leftFrontMotor, IntfMotor* rightFrontMotor,
     : leftFrontMotor(leftFrontMotor), rightFrontMotor(rightFrontMotor),
       leftBackMotor(leftBackMotor), rightBackMotor(rightBackMotor),
       maxMotorSpeed(maxMotorSpeed_rpm) {}
+
+
+float chassisMove::normalizeSpeed(float speed) {
+    if (speed > maxMotorSpeed_rpm) return maxMotorSpeed_rpm;
+    if (speed < -maxMotorSpeed_rpm) return -maxMotorSpeed_rpm;
+    return speed;
+}
+
+// Función para mandar las velocidades claculadas de los motores desde queue de CAN
+//TODO: poner tiempo limitado de espera tanto a send como receive
+void queueSend() {
+    float adjusted_speed[4];
+    // cambiar de vector eigen a array
+    for (int i = 0; i < 4; i++) {
+        adjusted_speed[i] = currentMotorSpeeds[i];  
+    }
+    if (xQueueSend(wheelSpeedQueue, (void *)adjusted_speed, portMAX_DELAY) != pdPASS) {
+        printf("Error: No se pudo enviar los datos a la cola.\n");
+    } else {
+        printf("Datos enviados a la cola.\n");
+    }
+}
+
+// Función para recibir las velocidades de los motores desde queue de CAN
+Eigen::VectorXf chassisMove::queueReceive() {
+    float actualMotorSpeeds[4]={0};
+    Eigen::VectorXf current_speeds
+    if (xQueueReceive(motorSpeedQueue, &actualMotorSpeeds, portMAX_DELAY) == pdPASS) {
+        current_speeds = Eigen::Map<Eigen::VectorXf>(actualMotorSpeeds, 4);
+    } else {
+        printf("Error.\n");
+        return current_speeds.setZero();
+    }
+    return current_speeds;
+}
 
 /**
  * @brief Convierte las entradas de los joysticks en velocidades de los motores.
@@ -41,7 +59,7 @@ chassisMove::chassisMove(IntfMotor* leftFrontMotor, IntfMotor* rightFrontMotor,
  * @param y1 Entrada del joystick 1 (eje Y para desplazamiento en el plano vertical).
  * @param x2 Entrada del joystick 2 (eje X para control de torsión).
  * @param y2 Entrada del joystick 2 (eje Y para control de torsión).
- * @param theta_joy Ángulo de orientación del joystick2 (en radianes).
+ * @param w Ángulo de orientación del joystick2 (en radianes).
  */
 void chassisMove::joystickToMotors(float x1, float y1, float x2, float y2) {
     // Cálculo del ángulo deseado 
@@ -60,11 +78,10 @@ void chassisMove::joystickToMotors(float x1, float y1, float x2, float y2) {
     Eigen::VectorXf wheel_speed = control_matrix * joystick_input;
     wheel_speed = wheel_speed.unaryExpr([this](float speed) { return normalizeSpeed(speed); });
 
-        // Restar las velocidades actuales (obtenidas de la cola)
-    Eigen::VectorXf adjusted_speed(4);
-    for (int i = 0; i < 4; i++) {
-        adjusted_speed[i] = currentMotorSpeeds[i]-wheel_speed[i] ;
-    }
+    Eigen::VectorXf currentMotorSpeeds=queueReceive();
+
+    //obtener la diferencia de velocidades
+    Eigen::VectorXf adjusted_speed = wheel_speed - currentMotorSpeeds;
 
     leftFrontMotor->actuate(adjusted_speed[0]);   // Delantera izquierda
     rightFrontMotor->actuate(adjusted_speed[1]);  // Delantera derecha

@@ -71,28 +71,27 @@ void chassisMove::joystickToMotors(float x1, float y1, float x2, float y2) {
     leftFrontMotor->actuate(wheel_speed[0]);   // Delantera izquierda
     rightFrontMotor->actuate(wheel_speed[1]);  // Delantera derecha
     rightBackMotor->actuate(wheel_speed[2]);   // Trasera derecha
-    leftBackMotor->actuate(wheel_speed[3]);    // Trasera izquierda  
-
-    //PARTE ANA - leer referencia de velovidad en el IMU
-    //postitionr1... es la velocidad detectada en el imu para cada uno de los motores. 
-    //planeados1... son la velocidades calculadas en la matriz
-
-    float m1= positionr1-planeado1;
-    float m2= positionr2-planeado2;
-    float m3= positionr3-planeado3;
-    float m4= positionr4-planeado4;
-
-    leftFrontMotor->actuate(wheel_speed[0]+m1);   // Delantera izquierda
-    rightFrontMotor->actuate(wheel_speed[1]+m2);  // Delantera derecha
-    rightBackMotor->actuate(wheel_speed[2]+m3);   // Trasera derecha
-    leftBackMotor->actuate(wheel_speed[3]+m4);    // Trasera izquierda
-    
+    leftBackMotor->actuate(wheel_speed[3]);    // Trasera izquierda   
 }
-
 
 void chassisMove::stop() {
     leftFrontMotor->stop(0);
     rightFrontMotor->stop(0);
     leftBackMotor->stop(0);
     rightBackMotor->stop(0);
+}
+ //PARTE ANA - leer referencia de velovidad en el IMU
+ //x1, y1, z1 son aceleromentro 
+
+//se llaman los valores dados por el acelerometro de la imu y por las velocidades de los motores.
+void chassisMove::LecturaDeDatos(float x1, float y1,float z1 , float leftFrontSpeed, float rightFrontSpeed, float rightBackSpeed, float leftBackSpeed){
+
+     float x1g = x1 / 16384.0;  // Conversión a G (para ±2g) esto solo los valores del acelerometro(tengo duda si se tiene que convertir)
+    float y1g = y1 / 16384.0;
+    float z1g = z1 / 16384.0;
+
+    //para imprimir los valores dados por el acelerometro de la imu y por las velocidades de los motores.
+   printf("Acelerómetro: X=%.2f g, Y=%.2f g, Z=%.2f g\n", x1g, y1g, z1g);
+   printf("velocidades llantas: LF=%.2f , RF=%.2f , RB=%.2f, LB=%.2f \n", leftFrontSpeed, rightFrontSpeed, rightBackSpeed, leftBackSpeed);
+
 }

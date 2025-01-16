@@ -29,7 +29,10 @@
  * @brief Estructura Vector de velocidades de los motores.
  */
 struct TDB {
-    Eigen::Vector4i motorSpeeds; 
+    int motor1; // Velocidad motor delantero izquierdo
+    int motor2; // Velocidad motor delantero derecho
+    int motor3; // Velocidad motor trasero derecho
+    int motor4; // Velocidad motor trasero izquierdo
 };
 
 /**
@@ -47,8 +50,8 @@ private:
     IntfMotor* rightBackMotor;
     float maxMotorSpeed_rpm; 
 
-    QueueHandle_t sendQueue; 
-    QueueHandle_t receiveQueue;
+    QueueHandle_t sendQueueCAN; 
+    QueueHandle_t receiveQueueCAN;
 
     float normalizeSpeed(float speed);
 

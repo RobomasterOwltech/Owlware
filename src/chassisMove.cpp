@@ -47,7 +47,7 @@ float chassisMove::normalizeSpeed(float speed) {
  */
 BaseType_t chassisMove::xQueueSend(QueueHandle_t queue, const TDB* data, TickType_t xTicksToWait) {
     if (xQueueSend(queue, (void*)data, xTicksToWait) != pdPASS) {
-        printf("Error: No se pudo enviar los datos a la cola.\n");
+        printf("Error: No se pudo enviar los datos a la cola de CAN.\n");
         return pdFAIL;
     }
     return pdPASS;
@@ -63,7 +63,7 @@ BaseType_t chassisMove::xQueueSend(QueueHandle_t queue, const TDB* data, TickTyp
  */
 BaseType_t chassisMove::xQueueReceive(QueueHandle_t queue, TDB* data, TickType_t xTicksToWait) {
     if (xQueueReceive(queue, (void*)data, xTicksToWait) != pdPASS) {
-        printf("Error: No se pudo recibir los datos de la cola.\n");
+        printf("Error: No se pudo recibir los datos de la cola de CAN.\n");
         return pdFAIL;
     }
     return pdPASS;
@@ -97,23 +97,28 @@ void chassisMove::joystickToMotors(float x1, float y1, float x2, float y2) {
     Eigen::VectorXf wheel_speed = control_matrix * joystick_input;
     wheel_speed = wheel_speed.unaryExpr([this](float speed) { return normalizeSpeed(speed); });
 
-    Eigen::Vector4f currentMotorSpeeds;
-    if (xQueueReceive(receiveQueue, &currentMotorSpeeds, pdMS_TO_TICKS(100)) != pdPASS) {
-        printf("Error: No se pudieron recibir las velocidades actuales.\n");
-        return;
-    }
+    TDB currentSpeeds;
+    if (xQueueReceive(receiveQueue, &currentSpeeds, portMAX_DELAY) == pdPASS) {
+        Eigen::VectorXf currentMotorSpeeds(4);
+        currentMotorSpeeds << currentSpeeds.motor1, 
+                              currentSpeeds.motor2, 
+                              currentSpeeds.motor3, 
+                              currentSpeeds.motor4;
 
-    Eigen::Vector4f error_speed = wheel_speed - currentMotorSpeeds;
+    Eigen::Vector4f error_speed = wheel_speed.cast<float>() - currentMotorSpeeds;
     leftFrontMotor->actuate(error_speed[0]);   // Delantera izquierda
     rightFrontMotor->actuate(error_speed[1]);  // Delantera derecha
     rightBackMotor->actuate(error_speed[2]);   // Trasera derecha
     leftBackMotor->actuate(error_speed[3]);    // Trasera izquierda
 
-    if (xQueueSend(sendQueue, &error_speed, pdMS_TO_TICKS(100)) != pdPASS) {
-        printf("Error: No se pudo enviar el error de velocidades.\n");
+        TDB error_TDB = {error_speed[0], error_speed[1], error_speed[2], error_speed[3]};
+        xQueueSend(sendQueue, &error_TDB, portMAX_DELAY);
+    } else {
+        printf("Error: No se pudieron obtener las velocidades actuales desde la cola de CAN.\n");
     }
-
 }
+
+
 
 void chassisMove::stop() {
     leftFrontMotor->stop(0);

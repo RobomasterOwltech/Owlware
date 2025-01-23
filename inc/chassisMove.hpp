@@ -53,7 +53,7 @@ private:
     QueueHandle_t sendQueueCAN; 
     QueueHandle_t receiveQueueCAN;
 
-    float normalizeSpeed(float speed);
+    float normalizeSpeed(TDB currentSpeeds);
 
     BaseType_t xQueueSend(
         QueueHandle_t queue, 

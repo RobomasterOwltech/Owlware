@@ -24,18 +24,34 @@ chassisMove::chassisMove(IntfMotor* leftFrontMotor, IntfMotor* rightFrontMotor,
 }
 
 /**
- * @brief Normaliza la velocidad del motor.
+ * @brief Normaliza las velocidades de los motores para que ninguna exceda el rango permitido.
  * 
- * Si la velocidad excede los límites, se ajusta al máximo permitido.
+ * Si alguna velocidad supera el rango (-maxMotorSpeed_rpm a maxMotorSpeed_rpm), 
+ * se escalan todas proporcionalmente manteniendo sus signos originales.
  * 
- * @param speed Velocidad del motor a normalizar.
- * @return Velocidad normalizada.
+ * @param currentSpeeds Estructura TDB que contiene las velocidades de los motores.
+ * @return Una estructura TDB con las velocidades normalizadas.
  */
-float chassisMove::normalizeSpeed(float speed) {
-    if (speed > maxMotorSpeed_rpm) return maxMotorSpeed_rpm;
-    if (speed < -maxMotorSpeed_rpm) return -maxMotorSpeed_rpm;
-    return speed;
+TDB chassisMove::normalizeSpeed(TDB currentSpeeds) {
+    float maxSpeed = std::max({
+        std::abs(currentSpeeds.motor1),
+        std::abs(currentSpeeds.motor2),
+        std::abs(currentSpeeds.motor3),
+        std::abs(currentSpeeds.motor4)
+    });
+
+    if (maxSpeed > maxMotorSpeed_rpm) {
+        float scale = maxMotorSpeed_rpm / maxSpeed; 
+
+        currentSpeeds.motor1 *= scale;
+        currentSpeeds.motor2 *= scale;
+        currentSpeeds.motor3 *= scale;
+        currentSpeeds.motor4 *= scale;
+    }
+    
+    return currentSpeeds;
 }
+
 
 /**
  * @brief Envía datos de velocidad de motores a la cola especificada.

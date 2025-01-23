@@ -32,25 +32,24 @@ chassisMove::chassisMove(IntfMotor* leftFrontMotor, IntfMotor* rightFrontMotor,
  * @param currentSpeeds Estructura TDB que contiene las velocidades de los motores.
  * @return Una estructura TDB con las velocidades normalizadas.
  */
-TDB chassisMove::normalizeSpeed(TDB currentSpeeds) {
-    float maxSpeed = std::max({
-        std::abs(currentSpeeds.motor1),
-        std::abs(currentSpeeds.motor2),
-        std::abs(currentSpeeds.motor3),
-        std::abs(currentSpeeds.motor4)
-    });
-
+/**
+ * @brief Normaliza el vector de velocidades de las ruedas para que ninguna supere el rango permitido.
+ * 
+ * Si alguna velocidad en el vector excede el rango (-maxMotorSpeed_rpm a maxMotorSpeed_rpm), 
+ * todo el vector se escala proporcionalmente manteniendo los signos.
+ * 
+ * @param wheel_speed Vector de velocidades de los motores (Eigen::VectorXf).
+ * @return Un vector Eigen::VectorXf con las velocidades normalizadas.
+ */
+Eigen::VectorXf chassisMove::normalizeSpeed(const Eigen::VectorXf& wheel_speed) {
+    float maxSpeed = wheel_speed.cwiseAbs().maxCoeff();
     if (maxSpeed > maxMotorSpeed_rpm) {
         float scale = maxMotorSpeed_rpm / maxSpeed; 
-
-        currentSpeeds.motor1 *= scale;
-        currentSpeeds.motor2 *= scale;
-        currentSpeeds.motor3 *= scale;
-        currentSpeeds.motor4 *= scale;
+        return wheel_speed * scale; // Escala todo el vector manteniendo los signos
     }
-    
-    return currentSpeeds;
+    return wheel_speed;
 }
+
 
 
 /**
@@ -111,7 +110,7 @@ void chassisMove::joystickToMotors(float x1, float y1, float x2, float y2) {
 
     //v=M*u
     Eigen::VectorXf wheel_speed = control_matrix * joystick_input;
-    wheel_speed = wheel_speed.unaryExpr([this](float speed) { return normalizeSpeed(speed); });
+    wheel_speed = normalizeSpeed(wheel_speed);
 
     TDB currentSpeeds;
     if (xQueueReceive(receiveQueue, &currentSpeeds, portMAX_DELAY) == pdPASS) {

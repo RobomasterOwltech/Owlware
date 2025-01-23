@@ -53,7 +53,7 @@ private:
     QueueHandle_t sendQueueCAN; 
     QueueHandle_t receiveQueueCAN;
 
-    float normalizeSpeed(TDB currentSpeeds);
+    Eigen normalizeSpeed(const Eigen::VectorXf& wheel_speed);
 
     BaseType_t xQueueSend(
         QueueHandle_t queue, 
